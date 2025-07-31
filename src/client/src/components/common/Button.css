@@ -1,0 +1,20 @@
+.common-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.common-btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+.common-btn.primary:hover {
+  opacity: 0.9;
+}
+.common-btn.secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}

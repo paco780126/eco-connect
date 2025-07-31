@@ -1,0 +1,13 @@
+/* src/styles/variables.css */
+:root {
+  --primary-color: #27ae60; /* 에코 그린 */
+  --secondary-color: #2c3e50; /* 다크 블루 */
+  --text-color: #333;
+  --background-color: #fff;
+  --border-color: #ddd;
+  --error-color: #e74c3c;
+  
+  --font-size-large: 24px;
+  --font-size-medium: 16px;
+  --font-size-small: 14px;
+}
