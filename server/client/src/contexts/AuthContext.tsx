@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import * as ReactRouterDom from 'react-router-dom';
 import { authFetch } from '../utils/api';
 
 interface User {
@@ -11,9 +12,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (credentials: { email: string; password: string }) => Promise<void>;
-  register: (details: { name: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
-  updateUserProfile: (data: { user: User, token: string }) => void;
   isLoading: boolean;
 }
 
@@ -23,17 +22,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigate = ReactRouterDom.useNavigate();
 
   useEffect(() => {
     try {
-      const storedToken = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
+      const storedToken = localStorage.getItem('admin-token');
+      const storedUser = localStorage.getItem('admin-user');
       if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser.role === 'admin') {
+            setToken(storedToken);
+            setUser(parsedUser);
+        } else {
+            localStorage.clear();
+        }
       }
     } catch (error) {
-      console.error("Failed to load user from local storage", error);
+      console.error("Failed to load admin user from local storage", error);
       localStorage.clear();
     } finally {
       setIsLoading(false);
@@ -42,42 +47,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (credentials: { email: string; password: string }) => {
     const data = await authFetch('/login', {
-      method: 'POST',
-      body: credentials,
+        method: 'POST',
+        body: credentials,
     });
 
-    if (!data || !data.token || !data.user) {
-        throw new Error('서버로부터 유효한 로그인 정보를 받지 못했습니다.');
+    if (!data || !data.user || data.user.role !== 'admin') {
+      throw new Error('관리자 계정이 아니거나 서버 응답이 올바르지 않습니다.');
     }
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setToken(data.token);
-    setUser(data.user);
-  };
-
-  const register = async (details: { name: string; email: string; password: string }) => {
-    await authFetch('/register', {
-        method: 'POST',
-        body: details
-    });
-  };
-  
-  const updateUserProfile = (data: { user: User, token: string }) => {
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('admin-token', data.token);
+    localStorage.setItem('admin-user', JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('admin-token');
+    localStorage.removeItem('admin-user');
     setToken(null);
     setUser(null);
+    navigate('/login');
   };
 
-  const value = { user, token, login, register, logout, updateUserProfile, isLoading };
+  const value = { user, token, login, logout, isLoading };
 
   return (
     <AuthContext.Provider value={value}>
