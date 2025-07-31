@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import ProductCard from './shop/ProductCard';
 import { mockProducts } from '../data/mock-products';
 
@@ -11,9 +11,9 @@ const HomePage: React.FC = () => {
       <section className="home-hero">
         <h1>지속가능한 내일을 위한 연결, 에코코넥트</h1>
         <p>환경을 생각하는 소비, 믿을 수 있는 브랜드들을 한 곳에서 만나보세요. 더 나은 미래를 위한 작은 실천을 응원합니다.</p>
-        <Link to="/shop" className="hero-cta-btn">
+        <ReactRouterDom.Link to="/shop" className="hero-cta-btn">
           쇼핑하러 가기 <i className="fas fa-arrow-right"></i>
-        </Link>
+        </ReactRouterDom.Link>
       </section>
 
       <section className="featured-products-section">

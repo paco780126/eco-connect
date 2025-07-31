@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const { cartItemCount } = useCart();
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
 
   const handleLogout = () => {
     logout();
@@ -18,30 +18,30 @@ const Header: React.FC = () => {
     <header className="main-header">
       <div className="header-content">
         <h1 className="logo">
-          <Link to="/">에코코넥트</Link>
+          <ReactRouterDom.Link to="/">에코코넥트</ReactRouterDom.Link>
         </h1>
         <nav className="header-nav">
-          <Link to="/shop" className="nav-item">쇼핑</Link>
-          <Link to="/live/main" className="nav-item">라이브</Link>
-          <Link to="/community" className="nav-item">커뮤니티</Link>
+          <ReactRouterDom.Link to="/shop" className="nav-item">쇼핑</ReactRouterDom.Link>
+          <ReactRouterDom.Link to="/live/main" className="nav-item">라이브</ReactRouterDom.Link>
+          <ReactRouterDom.Link to="/community" className="nav-item">커뮤니티</ReactRouterDom.Link>
           <a href="#" className="nav-item">고객센터</a>
         </nav>
         <div className="header-user-menu">
-          <Link to="/cart" className="cart-link" aria-label="장바구니">
+          <ReactRouterDom.Link to="/cart" className="cart-link" aria-label="장바구니">
             장바구니
             {cartItemCount > 0 && <span className="cart-count">{cartItemCount}</span>}
-          </Link>
+          </ReactRouterDom.Link>
           {user ? (
             <>
               <span style={{fontWeight: 'bold', color: 'var(--primary-color)'}}>{user.name}님</span>
-              <Link to="/mypage">마이페이지</Link>
+              <ReactRouterDom.Link to="/mypage">마이페이지</ReactRouterDom.Link>
               <button onClick={handleLogout} className="nav-logout-btn">로그아웃</button>
             </>
           ) : (
             <>
-              <Link to="/login">로그인</Link>
+              <ReactRouterDom.Link to="/login">로그인</ReactRouterDom.Link>
               <span aria-hidden="true">/</span>
-              <Link to="/register">회원가입</Link>
+              <ReactRouterDom.Link to="/register">회원가입</ReactRouterDom.Link>
             </>
           )}
         </div>

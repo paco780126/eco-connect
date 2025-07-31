@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 const AdminLayout: React.FC = () => {
@@ -7,7 +7,7 @@ const AdminLayout: React.FC = () => {
     <div className="admin-layout">
       <Sidebar />
       <main className="admin-main-content">
-        <Outlet />
+        <ReactRouterDom.Outlet />
       </main>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -24,29 +24,29 @@ const App: React.FC = () => {
     <AuthProvider>
       <CartProvider>
         <CommunityProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<AppLayout />}>
-                <Route index element={<HomePage />} />
-                <Route path="shop" element={<ProductListPage />} />
-                <Route path="shop/:productId" element={<ProductDetailPage />} />
-                <Route path="cart" element={<CartPage />} />
-                <Route path="community" element={<CommunityPage />} />
-                <Route path="community/new" element={<PostEditorPage />} />
-                <Route path="community/:postId" element={<PostDetailPage />} />
-                <Route path="live/:streamId" element={<LivePage />} />
-                <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<RegisterPage />} />
-                <Route path="mypage" element={<MyPageLayout />}>
-                  <Route index element={<Navigate to="orders" replace />} />
-                  <Route path="orders" element={<OrderHistoryPage />} />
-                  <Route path="edit-profile" element={<EditProfilePage />} />
-                  <Route path="my-activities" element={<MyActivitiesPage />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+          <ReactRouterDom.BrowserRouter>
+            <ReactRouterDom.Routes>
+              <ReactRouterDom.Route element={<AppLayout />}>
+                <ReactRouterDom.Route index element={<HomePage />} />
+                <ReactRouterDom.Route path="shop" element={<ProductListPage />} />
+                <ReactRouterDom.Route path="shop/:productId" element={<ProductDetailPage />} />
+                <ReactRouterDom.Route path="cart" element={<CartPage />} />
+                <ReactRouterDom.Route path="community" element={<CommunityPage />} />
+                <ReactRouterDom.Route path="community/new" element={<PostEditorPage />} />
+                <ReactRouterDom.Route path="community/:postId" element={<PostDetailPage />} />
+                <ReactRouterDom.Route path="live/:streamId" element={<LivePage />} />
+                <ReactRouterDom.Route path="login" element={<LoginPage />} />
+                <ReactRouterDom.Route path="register" element={<RegisterPage />} />
+                <ReactRouterDom.Route path="mypage" element={<MyPageLayout />}>
+                  <ReactRouterDom.Route index element={<ReactRouterDom.Navigate to="orders" replace />} />
+                  <ReactRouterDom.Route path="orders" element={<OrderHistoryPage />} />
+                  <ReactRouterDom.Route path="edit-profile" element={<EditProfilePage />} />
+                  <ReactRouterDom.Route path="my-activities" element={<MyActivitiesPage />} />
+                </ReactRouterDom.Route>
+                <ReactRouterDom.Route path="*" element={<ReactRouterDom.Navigate to="/" replace />} />
+              </ReactRouterDom.Route>
+            </ReactRouterDom.Routes>
+          </ReactRouterDom.BrowserRouter>
         </CommunityProvider>
       </CartProvider>
     </AuthProvider>

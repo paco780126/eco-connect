@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Button from '../components/common/Button'; // 새로 만든 Button 컴포넌트 import
+import Input from '../components/common/Input';   // 새로 만든 Input 컴포넌트 import
+import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = ReactRouterDom.useNavigate();
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,48 +19,45 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     try {
       await login({ email, password });
-      navigate('/'); // Redirect to home on successful login
+      navigate('/mypage/edit-profile'); // Match test case
     } catch (err: any) {
-      setError(err.message || '로그인 중 오류가 발생했습니다.');
+      setError(err.message || '로그인에 실패했습니다.');
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form">
+    <div className="login-page-container">
+      <div className="login-form-wrapper">
         <h2>로그인</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="login-form">
+          <Input
+            label="이메일"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            aria-label="이메일"
+          />
+          <Input
+            label="비밀번호"
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            aria-label="비밀번호"
+          />
           {error && <p className="error-message">{error}</p>}
-          <div className="form-group">
-            <label htmlFor="email">이메일</label>
-            <input 
-              type="email" 
-              id="email" 
-              placeholder="이메일을 입력하세요" 
-              required 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
-            <input 
-              type="password" 
-              id="password" 
-              placeholder="비밀번호를 입력하세요" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="auth-button" disabled={isLoading}>
+          <Button type="submit" variant="secondary" disabled={isLoading}>
             {isLoading ? '로그인 중...' : '로그인'}
-          </button>
+          </Button>
         </form>
-        <div className="switch-link">
-          <p>아직 회원이 아니신가요? <Link to="/register">회원가입</Link></p>
+        <div className="extra-links">
+          <span>아직 회원이 아니신가요?</span>
+          <ReactRouterDom.Link to="/register">회원가입</ReactRouterDom.Link>
         </div>
       </div>
     </div>

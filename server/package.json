@@ -1,17 +1,20 @@
 {
-  "name": "jisu-monorepo",
-  "private": true,
+  "name": "jisu-ai-server",
   "version": "1.0.0",
-  "description": "Eco Connect Monorepo. Run 'npm install' then 'npm start'.",
-  "workspaces": [
-    "client",
-    "server",
-    "admin"
-  ],
+  "description": "Backend server for Eco Connect",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "concurrently \"npm start --prefix server\" \"npm run dev --prefix client\" \"npm run dev --prefix admin\""
+    "start": "node server.js"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "author": "Jisu",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.7.5"
   }
 }

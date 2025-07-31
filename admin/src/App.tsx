@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import AdminLoginPage from './pages/AdminLoginPage';
 import UserManagementPage from './pages/UserManagementPage';
@@ -12,11 +12,11 @@ import AdminLayout from './components/AdminLayout';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <ReactRouterDom.BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<AdminLoginPage />} />
-          <Route 
+        <ReactRouterDom.Routes>
+          <ReactRouterDom.Route path="/login" element={<AdminLoginPage />} />
+          <ReactRouterDom.Route 
             path="/" 
             element={
               <ProtectedRoute>
@@ -24,17 +24,17 @@ const App: React.FC = () => {
               </ProtectedRoute>
             } 
           >
-            <Route index element={<Navigate to="/users" replace />} />
-            <Route path="users" element={<UserManagementPage />} />
-            <Route path="products" element={<ProductListPage />} />
-            <Route path="products/new" element={<ProductEditorPage />} />
-            <Route path="products/edit/:productId" element={<ProductEditorPage />} />
-            <Route path="orders" element={<OrderManagementPage />} />
-            <Route path="live-control" element={<LiveControlPage />} />
-          </Route>
-        </Routes>
+            <ReactRouterDom.Route index element={<ReactRouterDom.Navigate to="/users" replace />} />
+            <ReactRouterDom.Route path="users" element={<UserManagementPage />} />
+            <ReactRouterDom.Route path="products" element={<ProductListPage />} />
+            <ReactRouterDom.Route path="products/new" element={<ProductEditorPage />} />
+            <ReactRouterDom.Route path="products/edit/:productId" element={<ProductEditorPage />} />
+            <ReactRouterDom.Route path="orders" element={<OrderManagementPage />} />
+            <ReactRouterDom.Route path="live-control" element={<LiveControlPage />} />
+          </ReactRouterDom.Route>
+        </ReactRouterDom.Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </ReactRouterDom.BrowserRouter>
   );
 };
 

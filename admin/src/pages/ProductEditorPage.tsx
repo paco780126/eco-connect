@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { authFetch } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 
 const ProductEditorPage: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
-  const navigate = useNavigate();
+  const { productId } = ReactRouterDom.useParams<{ productId: string }>();
+  const navigate = ReactRouterDom.useNavigate();
   const { token } = useAuth();
   
   const [productData, setProductData] = useState({

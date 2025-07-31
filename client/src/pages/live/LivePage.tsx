@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import io, { Socket } from 'socket.io-client';
+import * as ReactRouterDom from 'react-router-dom';
+import * as SocketIOClient from 'socket.io-client';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
 import './LivePage.css';
@@ -11,15 +11,17 @@ interface ChatMessage {
   text: string;
 }
 
+const SOCKET_SERVER_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
 const LivePage: React.FC = () => {
-  const { streamId } = useParams<{ streamId: string }>();
+  const { streamId } = ReactRouterDom.useParams<{ streamId: string }>();
   const { user } = useAuth();
   const [stream, setStream] = useState<any>(null);
   const [featuredProduct, setFeaturedProduct] = useState<any>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<SocketIOClient.Socket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const LivePage: React.FC = () => {
         setIsLoading(false);
       });
 
-    socketRef.current = io('http://localhost:3001');
+    socketRef.current = SocketIOClient.io(SOCKET_SERVER_URL);
     socketRef.current.emit('joinStream', streamId);
     
     socketRef.current.on('newChatMessage', (message: ChatMessage) => {
@@ -79,7 +81,7 @@ const LivePage: React.FC = () => {
   }
 
   if (!stream) {
-    return <Navigate to="/live/main" replace />;
+    return <ReactRouterDom.Navigate to="/live/main" replace />;
   }
 
   return (
@@ -104,11 +106,11 @@ const LivePage: React.FC = () => {
         <div className="product-info-card">
           <h3>방송 중인 상품</h3>
           {featuredProduct ? (
-             <Link to={`/shop/${featuredProduct.id}`}>
+             <ReactRouterDom.Link to={`/shop/${featuredProduct.id}`}>
                 <img src={featuredProduct.imageUrl} alt={featuredProduct.name} loading="lazy" />
                 <h4>{featuredProduct.name}</h4>
                 <p className="price">{featuredProduct.price.toLocaleString()}원</p>
-            </Link>
+            </ReactRouterDom.Link>
           ) : (
              <p>현재 판매중인 상품이 없습니다.</p>
           )}

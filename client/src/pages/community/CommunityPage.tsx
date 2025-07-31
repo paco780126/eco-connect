@@ -3,7 +3,7 @@ import { useCommunity } from '../../contexts/CommunityContext';
 import type { PostCategory } from '../../contexts/CommunityContext';
 import PostCard from '../../components/community/PostCard';
 import './CommunityPage.css';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 
 type CategoryFilter = 'all' | PostCategory;
 
@@ -24,10 +24,10 @@ const CommunityPage: React.FC = () => {
     <div className="community-page">
       <div className="community-header">
         <h1>커뮤니티</h1>
-         <Link to="/community/new" className="write-post-btn">
+         <ReactRouterDom.Link to="/community/new" className="write-post-btn">
           <i className="fas fa-pen"></i>
           <span>글쓰기</span>
-        </Link>
+        </ReactRouterDom.Link>
       </div>
       <div className="category-filter-bar">
         {categories.map(cat => (

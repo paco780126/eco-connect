@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
 
@@ -26,9 +26,9 @@ interface PostDetail {
 const API_URL = 'http://localhost:3001/api';
 
 const PostDetailPage: React.FC = () => {
-  const { postId } = useParams<{ postId: string }>();
+  const { postId } = ReactRouterDom.useParams<{ postId: string }>();
   const { user, token } = useAuth();
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
 
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -130,7 +130,7 @@ const PostDetailPage: React.FC = () => {
   }
 
   if (error || !post) {
-    return <Navigate to="/community" replace />;
+    return <ReactRouterDom.Navigate to="/community" replace />;
   }
 
   return (
@@ -181,7 +181,7 @@ const PostDetailPage: React.FC = () => {
             )}
         </ul>
       </section>
-       <Link to="/community" className="auth-button" style={{width: 'auto', padding: '12px 24px', margin: '40px auto 0', display: 'block'}}>목록으로</Link>
+       <ReactRouterDom.Link to="/community" className="auth-button" style={{width: 'auto', padding: '12px 24px', margin: '40px auto 0', display: 'block'}}>목록으로</ReactRouterDom.Link>
     </div>
   );
 };

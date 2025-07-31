@@ -28,7 +28,7 @@ export const useCart = () => {
   return context;
 };
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const localData = localStorage.getItem('ecoconnect-cart');

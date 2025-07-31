@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCommunity } from '../../contexts/CommunityContext';
 import { authFetch } from '../../utils/api';
@@ -7,7 +7,7 @@ import { authFetch } from '../../utils/api';
 type PostCategory = '꿀템발견' | '집꾸미기' | '집들이' | '추천';
 
 const PostEditorPage: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
   const { token } = useAuth();
   const { addPost } = useCommunity();
 

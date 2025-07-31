@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { mockProducts } from '../../data/mock-products';
 import { mockProductDetails, ProductDetail, Review, QuestionAnswer } from '../../data/mock-product-details';
 import { useCart } from '../../contexts/CartContext';
@@ -7,7 +7,7 @@ import { useCart } from '../../contexts/CartContext';
 type Tab = 'description' | 'reviews' | 'qna';
 
 const ProductDetailPage: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
+  const { productId } = ReactRouterDom.useParams<{ productId: string }>();
   const { addToCart } = useCart();
   
   const [quantity, setQuantity] = useState(1);
@@ -25,7 +25,7 @@ const ProductDetailPage: React.FC = () => {
   }, [details]);
 
   if (!product || !details) {
-    return <Navigate to="/shop" replace />;
+    return <ReactRouterDom.Navigate to="/shop" replace />;
   }
   
   const handleQuantityChange = (amount: number) => {
@@ -35,7 +35,6 @@ const ProductDetailPage: React.FC = () => {
   const handleAddToCart = () => {
     if (product) {
       addToCart(product, quantity);
-      alert(`'${product.name}' ${quantity}개를 장바구니에 담았습니다.`);
     }
   };
 

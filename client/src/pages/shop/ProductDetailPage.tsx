@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { authFetch } from '../../utils/api';
 import { useCart } from '../../contexts/CartContext';
 import './ProductDetailPage.css';
@@ -14,7 +14,7 @@ interface Product {
 }
 
 const ProductDetailPage: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
+  const { productId } = ReactRouterDom.useParams<{ productId: string }>();
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -48,7 +48,7 @@ const ProductDetailPage: React.FC = () => {
   };
 
   if (loading) return <div style={{textAlign: 'center', padding: '60px 0'}}>상품 정보를 불러오는 중...</div>;
-  if (!product) return <Navigate to="/shop" replace />;
+  if (!product) return <ReactRouterDom.Navigate to="/shop" replace />;
   
   const totalPrice = product.price * quantity;
 

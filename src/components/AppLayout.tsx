@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import JisuAiChatbot from './JisuAiChatbot';
@@ -9,7 +9,7 @@ const AppLayout: React.FC = () => {
     <div id="app-container">
       <Header />
       <main>
-        <Outlet />
+        <ReactRouterDom.Outlet />
       </main>
       <Footer />
       <JisuAiChatbot />

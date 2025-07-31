@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 
 const CartPage: React.FC = () => {
@@ -19,7 +19,7 @@ const CartPage: React.FC = () => {
         <div className="empty-cart-content">
           <i className="fas fa-shopping-cart" aria-hidden="true"></i>
           <p>장바구니가 비어있습니다.</p>
-          <Link to="/shop" className="auth-button">쇼핑 계속하기</Link>
+          <ReactRouterDom.Link to="/shop" className="auth-button">쇼핑 계속하기</ReactRouterDom.Link>
         </div>
       </div>
     );
@@ -34,7 +34,7 @@ const CartPage: React.FC = () => {
             <li key={item.id} className="cart-item">
               <img src={item.imageUrl} alt={item.name} className="cart-item-image" />
               <div className="cart-item-info">
-                <Link to={`/shop/${item.id}`} className="cart-item-name">{item.name}</Link>
+                <ReactRouterDom.Link to={`/shop/${item.id}`} className="cart-item-name">{item.name}</ReactRouterDom.Link>
                 <p className="cart-item-price">{item.price.toLocaleString()}원</p>
               </div>
               <div className="cart-item-controls">
@@ -65,7 +65,7 @@ const CartPage: React.FC = () => {
             <span>{totalPrice.toLocaleString()}원</span>
           </div>
           <button className="auth-button order-btn">주문하기</button>
-          <Link to="/shop" className="continue-shopping-link">쇼핑 계속하기</Link>
+          <ReactRouterDom.Link to="/shop" className="continue-shopping-link">쇼핑 계속하기</ReactRouterDom.Link>
         </aside>
       </div>
     </div>

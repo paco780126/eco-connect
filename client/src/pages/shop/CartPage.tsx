@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCart } from '../../contexts/CartContext';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import './CartPage.css';
 
 const CartPage: React.FC = () => {
@@ -16,7 +16,7 @@ const CartPage: React.FC = () => {
               <div key={item.id} className="cart-item">
                 <img src={item.imageUrl} alt={item.name} className="cart-item-image" />
                 <div className="cart-item-info">
-                  <Link to={`/shop/${item.id}`}>{item.name}</Link>
+                  <ReactRouterDom.Link to={`/shop/${item.id}`}>{item.name}</ReactRouterDom.Link>
                   <p className="cart-item-price">{item.price.toLocaleString()}원</p>
                 </div>
                 <div className="cart-item-quantity">
@@ -52,7 +52,7 @@ const CartPage: React.FC = () => {
       ) : (
         <div className="empty-cart">
           <p>장바구니가 비어 있습니다.</p>
-          <Link to="/shop" className="go-shopping-btn">쇼핑 계속하기</Link>
+          <ReactRouterDom.Link to="/shop" className="go-shopping-btn">쇼핑 계속하기</ReactRouterDom.Link>
         </div>
       )}
     </div>

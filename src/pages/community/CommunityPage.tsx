@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useCommunity } from '../../contexts/CommunityContext';
 import type { PostCategory, CommunityPost } from '../../contexts/CommunityContext';
 
@@ -30,10 +30,10 @@ const CommunityPage: React.FC = () => {
     <div className="community-page-container">
       <div className="community-header">
         <h2>커뮤니티</h2>
-        <Link to="/community/new" className="write-post-btn">
+        <ReactRouterDom.Link to="/community/new" className="write-post-btn">
           <i className="fas fa-pen"></i>
           <span>글쓰기</span>
-        </Link>
+        </ReactRouterDom.Link>
       </div>
 
       <div className="community-controls">
@@ -71,7 +71,7 @@ const CommunityPage: React.FC = () => {
                 <tr key={post.id}>
                   <td>{post.category}</td>
                   <td className="col-title">
-                    <Link to={`/community/${post.id}`}>{post.title}</Link>
+                    <ReactRouterDom.Link to={`/community/${post.id}`}>{post.title}</ReactRouterDom.Link>
                   </td>
                   <td>{post.author}</td>
                   <td>{formatDate(post.createdAt)}</td>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const RegisterPage: React.FC = () => {
@@ -11,7 +11,7 @@ const RegisterPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const { register } = useAuth();
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +93,7 @@ const RegisterPage: React.FC = () => {
           </button>
         </form>
         <div className="switch-link">
-          <p>이미 계정이 있으신가요? <Link to="/login">로그인</Link></p>
+          <p>이미 계정이 있으신가요? <ReactRouterDom.Link to="/login">로그인</ReactRouterDom.Link></p>
         </div>
       </div>
     </div>

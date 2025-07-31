@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
+import * as SocketIOClient from 'socket.io-client';
 import { useAuth } from '../contexts/AuthContext';
 import { authFetch } from '../utils/api';
 
@@ -14,7 +14,7 @@ interface Product {
     brand: string;
 }
 
-const SOCKET_SERVER_URL = 'http://localhost:3001';
+const SOCKET_SERVER_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const LiveControlPage: React.FC = () => {
     const { token } = useAuth();
@@ -23,10 +23,10 @@ const LiveControlPage: React.FC = () => {
     const [selectedStreamId, setSelectedStreamId] = useState<string>('');
     const [featuredProductId, setFeaturedProductId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const socketRef = useRef<Socket | null>(null);
+    const socketRef = useRef<SocketIOClient.Socket | null>(null);
 
     useEffect(() => {
-        socketRef.current = io(SOCKET_SERVER_URL);
+        socketRef.current = SocketIOClient.io(SOCKET_SERVER_URL);
         return () => {
             socketRef.current?.disconnect();
         };

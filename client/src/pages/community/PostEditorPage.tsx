@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCommunity } from '../../contexts/CommunityContext';
 import { authFetch } from '../../utils/api';
@@ -18,7 +18,7 @@ const PostEditorPage: React.FC = () => {
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
   const { token } = useAuth();
   const { fetchPosts } = useCommunity();
   

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import './PostCard.css';
 
 interface PostCardProps {
@@ -13,7 +13,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
-    <Link to={`/community/${post.id}`} className="post-card">
+    <ReactRouterDom.Link to={`/community/${post.id}`} className="post-card">
       <div className="post-card-image">
         <img src={post.thumbnailUrl} alt={post.title} loading="lazy" />
       </div>
@@ -21,7 +21,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <h3 className="post-card-title">{post.title}</h3>
         <p className="post-card-author">{post.author}</p>
       </div>
-    </Link>
+    </ReactRouterDom.Link>
   );
 };
 

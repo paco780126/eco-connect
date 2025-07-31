@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
 import './MyActivitiesPage.css';
@@ -79,14 +79,14 @@ const MyActivitiesPage: React.FC = () => {
           <div className="post-list">
             {activities.posts.length > 0 ? (
               activities.posts.map(post => (
-                <Link to={`/community/${post.id}`} key={post.id} className="post-item">
+                <ReactRouterDom.Link to={`/community/${post.id}`} key={post.id} className="post-item">
                   <span className="post-title">{post.title}</span>
                   <div className="post-meta">
                     <span>{formatDate(post.createdAt)}</span>
                     <span>조회 {post.views}</span>
                     <span>추천 {post.likes}</span>
                   </div>
-                </Link>
+                </ReactRouterDom.Link>
               ))
             ) : <p className="no-content-message">작성한 글이 없습니다.</p>}
           </div>
@@ -96,10 +96,10 @@ const MyActivitiesPage: React.FC = () => {
           <div className="comment-list">
             {activities.comments.length > 0 ? (
                activities.comments.map(comment => (
-                <Link to={`/community/${comment.postId}#comment-${comment.id}`} key={comment.id} className="comment-item">
+                <ReactRouterDom.Link to={`/community/${comment.postId}#comment-${comment.id}`} key={comment.id} className="comment-item">
                    <p className="comment-text">"{comment.text}"</p>
                    <span className="comment-date">{formatDate(comment.createdAt)}</span>
-                </Link>
+                </ReactRouterDom.Link>
               ))
             ) : <p className="no-content-message">작성한 댓글이 없습니다.</p>}
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useParams, Navigate, Link } from 'react-router-dom';
-import { io, Socket } from 'socket.io-client';
+import * as ReactRouterDom from 'react-router-dom';
+import * as SocketIOClient from 'socket.io-client';
 import { mockLiveStreams, getProductsByIds, ChatMessage } from '../../data/mock-live-streams';
 import { Product } from '../../data/mock-products';
 import { useCart } from '../../contexts/CartContext';
@@ -18,13 +18,13 @@ const RelatedProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
     return (
         <div className="related-product-card">
-            <Link to={`/shop/${product.id}`}>
+            <ReactRouterDom.Link to={`/shop/${product.id}`}>
                 <img src={product.imageUrl} alt={product.name} className="related-product-image" />
                 <div className="related-product-info">
                     <p className="related-product-name">{product.name}</p>
                     <p className="related-product-price">{product.price.toLocaleString()}원</p>
                 </div>
-            </Link>
+            </ReactRouterDom.Link>
             <div className="related-product-actions">
                 <button className="add-to-cart-btn" onClick={handleAddToCart}>
                     <i className="fas fa-cart-plus"></i> 담기
@@ -36,7 +36,7 @@ const RelatedProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 
 const LivePage: React.FC = () => {
-    const { streamId } = useParams<{ streamId: string }>();
+    const { streamId } = ReactRouterDom.useParams<{ streamId: string }>();
     const { user } = useAuth();
     
     const stream = useMemo(() => streamId ? mockLiveStreams[streamId] : null, [streamId]);
@@ -45,13 +45,13 @@ const LivePage: React.FC = () => {
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>(stream?.chatMessages || []);
     const [newMessage, setNewMessage] = useState('');
     
-    const socketRef = useRef<Socket | null>(null);
+    const socketRef = useRef<SocketIOClient.Socket | null>(null);
     const chatListRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!streamId) return;
 
-        socketRef.current = io(SOCKET_SERVER_URL);
+        socketRef.current = SocketIOClient.io(SOCKET_SERVER_URL);
 
         socketRef.current.emit('joinStream', streamId);
 
@@ -76,7 +76,7 @@ const LivePage: React.FC = () => {
     }, [chatMessages]);
 
     if (!stream) {
-        return <Navigate to="/" replace />;
+        return <ReactRouterDom.Navigate to="/" replace />;
     }
 
     const relatedProducts = getProductsByIds(stream.relatedProductIds);

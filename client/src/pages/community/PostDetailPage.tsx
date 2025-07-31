@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
-import io, { Socket } from 'socket.io-client';
+import * as ReactRouterDom from 'react-router-dom';
+import * as SocketIOClient from 'socket.io-client';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
 
@@ -33,15 +33,15 @@ interface PostDetail {
 }
 
 const PostDetailPage: React.FC = () => {
-  const { postId } = useParams<{ postId: string }>();
+  const { postId } = ReactRouterDom.useParams<{ postId: string }>();
   const { user, token } = useAuth();
-  const navigate = useNavigate();
+  const navigate = ReactRouterDom.useNavigate();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState<PostComment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
     if (!postId) return;
@@ -56,7 +56,7 @@ const PostDetailPage: React.FC = () => {
       navigate('/community');
     });
 
-    socketRef.current = io('http://localhost:3001');
+    socketRef.current = SocketIOClient.io('http://localhost:3001');
     socketRef.current.emit('join-post-room', postId);
     
     socketRef.current.on('new-comment', (comment: any) => {
@@ -153,13 +153,13 @@ const PostDetailPage: React.FC = () => {
             <h3>태그된 상품</h3>
             <div className="tagged-products-grid">
             {post.taggedProducts.map(product => (
-                <Link to={`/shop/${product.id}`} key={product.id} className="tagged-product-card">
+                <ReactRouterDom.Link to={`/shop/${product.id}`} key={product.id} className="tagged-product-card">
                 <img src={product.imageUrl} alt={product.name} />
                 <div className="tagged-product-info">
                     <p className="name">{product.name}</p>
                     <p className="price">{product.price.toLocaleString()}원</p>
                 </div>
-                </Link>
+                </ReactRouterDom.Link>
             ))}
             </div>
         </section>

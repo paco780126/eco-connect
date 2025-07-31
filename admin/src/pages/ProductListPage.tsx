@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import { authFetch } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -57,9 +57,9 @@ const ProductListPage: React.FC = () => {
     <div className="admin-page-container">
       <div className="admin-page-header">
         <h1>상품 관리</h1>
-        <Link to="/products/new" className="admin-btn admin-btn-primary">
+        <ReactRouterDom.Link to="/products/new" className="admin-btn admin-btn-primary">
           새 상품 추가
-        </Link>
+        </ReactRouterDom.Link>
       </div>
       <table className="admin-table">
         <thead>
@@ -83,7 +83,7 @@ const ProductListPage: React.FC = () => {
               <td>{product.category}</td>
               <td>{product.price.toLocaleString()}원</td>
               <td className="action-cell">
-                <Link to={`/products/edit/${product.id}`} className="admin-btn-secondary admin-btn">수정</Link>
+                <ReactRouterDom.Link to={`/products/edit/${product.id}`} className="admin-btn-secondary admin-btn">수정</ReactRouterDom.Link>
                 <button
                   onClick={() => handleDelete(product.id, product.name)}
                   className="admin-btn-danger admin-btn"
