@@ -1,5 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-
+import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 interface Product {
   id: string;
   name: string;
