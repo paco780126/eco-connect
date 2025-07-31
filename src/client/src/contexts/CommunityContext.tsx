@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import { authFetch } from '../utils/api';
 
 export type PostCategory = '꿀템발견' | '집꾸미기' | '집들이' | '추천' | '테크' | '생활';
