@@ -1,120 +1,121 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as ReactRouterDom from 'react-router-dom';
+import * as SocketIOClient from 'socket.io-client';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
+import { Link, useParams } from 'react-router-dom';
 
-// Types for Post Detail
 interface PostComment {
   id: string;
   author: string;
   text: string;
   createdAt: string;
 }
-type PostCategory = '꿀템발견' | '집꾸미기' | '집들이' | '추천';
-interface PostDetail {
-  id: string;
-  category: PostCategory;
-  title: string;
-  author: string;
-  createdAt: string;
-  views: number;
-  likes: number;
-  content: string;
-  comments: PostComment[];
-}
 
-const API_URL = 'http://localhost:3001/api';
+interface TaggedProduct {
+    id: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+}
+  
+interface PostDetail {
+    id: string;
+    category: string;
+    title: string;
+    author: string;
+    createdAt: string;
+    views: number;
+    likes: number;
+    content: string;
+    comments: PostComment[];
+    isLiked: boolean;
+    taggedProducts?: TaggedProduct[];
+}
 
 const PostDetailPage: React.FC = () => {
   const { postId } = ReactRouterDom.useParams<{ postId: string }>();
   const { user, token } = useAuth();
   const navigate = ReactRouterDom.useNavigate();
-
   const [post, setPost] = useState<PostDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Local state for immediate UI feedback on like action
   const [isLiked, setIsLiked] = useState(false);
-  
+  const [comments, setComments] = useState<PostComment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-
-  const fetchPost = useCallback(async () => {
-    if (!postId) return;
-    try {
-      // Don't need to setLoading(true) on refetch
-      const response = await fetch(`${API_URL}/posts/${postId}`);
-      if (!response.ok) {
-        throw new Error('게시글을 불러올 수 없습니다.');
-      }
-      const data = await response.json();
-      setPost(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [postId]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const socketRef = useRef<SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-    fetchPost();
-  }, [fetchPost]);
+    if (!postId) return;
+    
+    // API_CALL_SIMULATION: Fetch post details including comments and like status
+    authFetch(`/posts/${postId}`, { token }).then(data => {
+      setPost(data);
+      setComments(data.comments);
+      setIsLiked(data.isLiked);
+    }).catch(err => {
+      console.error("Failed to fetch post:", err);
+      navigate('/community');
+    });
+
+    socketRef.current = SocketIOClient.io('http://localhost:3001');
+    socketRef.current.emit('join-post-room', postId);
+    
+    socketRef.current.on('new-comment', (comment: any) => {
+      setComments(prev => [comment, ...prev]);
+    });
+
+    return () => { 
+      if (socketRef.current) {
+        socketRef.current.emit('leave-post-room', postId);
+        socketRef.current.disconnect(); 
+      }
+    };
+  }, [postId, navigate, token]);
 
   const handleLike = async () => {
+    if (!user) {
+        alert("추천하려면 로그인이 필요합니다.");
+        navigate('/login');
+        return;
+    }
     if (isLiked) {
-      alert("이미 추천한 게시물입니다.");
-      return;
+        alert("이미 추천한 게시물입니다.");
+        return;
     }
-     if (!user) {
-      alert("좋아요를 누르려면 로그인이 필요합니다.");
-      navigate("/login");
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_URL}/posts/${postId}/like`, {
-        method: 'POST',
-      });
-      if (!response.ok) {
-        throw new Error('좋아요 처리에 실패했습니다.');
-      }
-      const data = await response.json();
-      setIsLiked(true);
-      setPost(p => p ? { ...p, likes: data.likes } : null);
-    } catch (err: any) {
-      alert(err.message);
+        // API_CALL_SIMULATION: Send like request
+        const data = await authFetch(`/posts/${postId}/like`, { method: 'POST', token });
+        setPost((p: any) => p ? { ...p, likes: data.likes } : null);
+        setIsLiked(true);
+    } catch (error: any) {
+        alert(error.message || "추천 처리에 실패했습니다.");
     }
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
-
-    if (!token) {
-      alert('댓글을 작성하려면 로그인이 필요합니다.');
-      navigate("/login");
-      return;
+    if (!newComment.trim() || !user || !token) {
+        if(!user) alert("로그인이 필요합니다.");
+        return;
     }
     
-    setIsSubmittingComment(true);
+    setIsSubmitting(true);
     try {
+      // API_CALL_SIMULATION: Post new comment
       await authFetch(`/posts/${postId}/comments`, {
         method: 'POST',
         body: { text: newComment },
         token: token,
       });
-
       setNewComment('');
-      await fetchPost(); // Refetch post to get the new comment
-    } catch (err: any) {
-      alert(err.message);
+    } catch(err) {
+      console.error("Failed to submit comment:", err);
+      alert("댓글 등록에 실패했습니다.");
     } finally {
-      setIsSubmittingComment(false);
+      setIsSubmitting(false);
     }
   };
-
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ko-KR', {
       year: 'numeric',
@@ -125,13 +126,7 @@ const PostDetailPage: React.FC = () => {
     });
   };
 
-  if (loading) {
-    return <div style={{textAlign: 'center', padding: '60px 0'}}>게시글을 불러오는 중...</div>;
-  }
-
-  if (error || !post) {
-    return <ReactRouterDom.Navigate to="/community" replace />;
-  }
+  if (!post) return <div style={{textAlign: 'center', padding: '60px 0'}}>게시글을 불러오는 중...</div>;
 
   return (
     <div className="post-detail-page-container">
@@ -144,44 +139,58 @@ const PostDetailPage: React.FC = () => {
           <span>조회수: {post.views.toLocaleString()}</span>
         </div>
       </header>
-
-      <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
       
-      <div className="post-actions">
+      <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+
+       <div className="post-actions">
         <button className={`like-btn ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
           <i className="fas fa-heart"></i>
           <span>추천 {post.likes.toLocaleString()}</span>
         </button>
       </div>
 
+      {post.taggedProducts && post.taggedProducts.length > 0 && (
+        <section className="tagged-products-section">
+            <h3>태그된 상품</h3>
+            <div className="tagged-products-grid">
+            {post.taggedProducts.map(product => (
+                <ReactRouterDom.Link to={`/shop/${product.id}`} key={product.id} className="tagged-product-card">
+                <img src={product.imageUrl} alt={product.name} />
+                <div className="tagged-product-info">
+                    <p className="name">{product.name}</p>
+                    <p className="price">{product.price.toLocaleString()}원</p>
+                </div>
+                </ReactRouterDom.Link>
+            ))}
+            </div>
+        </section>
+      )}
+      
       <section className="comments-section">
-        <h3>댓글 ({post.comments.length})</h3>
-        <form className="comment-form" onSubmit={handleCommentSubmit}>
+        <h3>댓글 ({comments.length})</h3>
+        <form onSubmit={handleCommentSubmit} className="comment-form">
           <textarea
-            placeholder={user ? "따뜻한 댓글을 남겨주세요." : "댓글을 작성하려면 로그인이 필요합니다."}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            disabled={!user || isSubmittingComment}
+            placeholder={user ? "따뜻한 댓글을 남겨보세요..." : "로그인 후 댓글을 작성할 수 있습니다."}
+            disabled={!user || isSubmitting}
           />
-          <button type="submit" disabled={!user || isSubmittingComment}>
-            {isSubmittingComment ? '등록 중...' : '등록'}
+          <button type="submit" disabled={!user || isSubmitting || !newComment.trim()}>
+            {isSubmitting ? "등록 중..." : "등록"}
           </button>
         </form>
         <ul className="comment-list">
-            {post.comments.length > 0 ? post.comments.map(comment => (
-                <li key={comment.id} className="comment-item">
-                    <div className="comment-meta">
-                        <span className="comment-author">{comment.author}</span>
-                        <span className="comment-date">{formatDate(comment.createdAt)}</span>
-                    </div>
-                    <p className="comment-text">{comment.text}</p>
-                </li>
-            )) : (
-                <p style={{textAlign: 'center', color: 'var(--text-color-secondary)', padding: '40px 0'}}>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
-            )}
+          {comments.map(comment => (
+            <li key={comment.id} id={`comment-${comment.id}`} className="comment-item">
+              <div className="comment-meta">
+                <span className="comment-author">{comment.author}</span>
+                <span className="comment-date">{formatDate(comment.createdAt)}</span>
+              </div>
+              <p className="comment-text">{comment.text}</p>
+            </li>
+          ))}
         </ul>
       </section>
-       <ReactRouterDom.Link to="/community" className="auth-button" style={{width: 'auto', padding: '12px 24px', margin: '40px auto 0', display: 'block'}}>목록으로</ReactRouterDom.Link>
     </div>
   );
 };

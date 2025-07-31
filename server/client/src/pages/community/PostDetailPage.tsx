@@ -3,6 +3,7 @@ import * as ReactRouterDom from 'react-router-dom';
 import * as SocketIOClient from 'socket.io-client';
 import { useAuth } from '../../contexts/AuthContext';
 import { authFetch } from '../../utils/api';
+import { Link, useParams } from 'react-router-dom';
 
 interface PostComment {
   id: string;
